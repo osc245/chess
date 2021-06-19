@@ -418,19 +418,3 @@ class Tests(unittest.TestCase):
                     "1|R|N|B|Q|K|B|N|R|\n" +
                     "  a b c d e f g h\n")
         self.assertEqual(runTest(moves), expected)
-
-    # Gioachino Greco vs Anon 1620
-    def test32(self):
-        moves = "e2-e4 e7-e5 g1-f3 b8-c6 f1-c4 f8-c5 c2-c3 d8-e7 O-O d7-d6 d2-d4 c5-b6 c1-g5 f7-f6 g5-h4 \
-        g7-g5 f3-g5 f6-g5 d1-h5 e8-f8 h4-g5 e7-e8 h5-f3 f8-g7 c4-g8 h8-g8 f3-f6"
-        expected = ("8|r|_|b|_|q|_|r|_|\n"
-                    "7|p|p|p|_|_|_|k|p|\n"
-                    "6|_|b|n|p|_|Q|_|_|\n"
-                    "5|_|_|_|_|p|_|B|_|\n"
-                    "4|_|_|_|P|P|_|_|_|\n"
-                    "3|_|_|P|_|_|_|_|_|\n"
-                    "2|P|P|_|_|_|P|P|P|\n"
-                    "1|R|N|_|_|_|R|K|_|\n"
-                    "  a b c d e f g h\n")
-
-        self.assertEqual(runTest(moves), expected)
