@@ -1,31 +1,47 @@
-from ChessProgram.Pieces.Piece import Piece
-
+from .Piece import Piece
 
 class Pawn(Piece):
-    # enPassen field indicates whether the opponent can en passen capture it
+    # enPassant field indicates whether the opponent can en passant capture it
     def __init__(self, isWhite):
         Piece.__init__(self, isWhite, "P", "p")
-        self.enPassen = False
+        self.enPassant = False
 
-    def validMove(self, pos, board):
-        dy, dx = Piece.getDiff(pos)
+    def validMove(self, move, board):
+        dy, dx = self.getDiff(move)
+
+        # check if pawn is promoting it is moving to the last rank
+        if move.promotion and not ((self.isWhite and move.newRow == 7) or (not self.isWhite and move.newRow == 0)):
+            return False
+
+        # moving
         if dx == 0:
-            if board[pos[0] + dy//abs(dy)][pos[1]] is not None:  # square immediately in front of pawn is free
+            # square immediately in front of pawn is free
+            if board[move.oldRow + dy // abs(dy)][move.oldCol] is not None:
                 return False
+
+            # moving one square
             if (self.isWhite and dy == 1) or (not self.isWhite and dy == -1):
-                self.enPassen = False
+                self.enPassant = False
                 return True
-            if (self.isWhite and dy == 2 and pos[0] == 1) or (not self.isWhite and dy == -2 and pos[0] == 6):
-                if board[pos[0] + dy][pos[1]] is None:  # square two squares in front of pawn is free
-                    self.enPassen = True
+
+            # moving two squares
+            if (self.isWhite and dy == 2 and move.oldRow == 1) or (not self.isWhite and dy == -2 and move.oldRow == 6):
+                if board[move.oldRow + dy][move.oldCol] is None:  # square two squares in front of pawn is free
+                    self.enPassant = True
                     return True
+
+        # capturing
         if abs(dx) == 1:
             if (self.isWhite and dy == 1) or (not self.isWhite and dy == -1):
-                if board[pos[2]][pos[3]] is not None and Piece.validCapture(pos, board):  # capturing regularly
-                    self.enPassen = False
+                # capturing normally
+                if board[move.newRow][move.newCol] is not None:
+                    self.enPassant = False
                     return True
-                if (self.isWhite and dy == 1) or (not self.isWhite and dy == -1):  # capturing en passen
-                    if isinstance(board[pos[0]][pos[3]], Pawn) and board[pos[0]][pos[3]].enPassen\
-                            and board[pos[0]][pos[3]].isWhite != board[pos[0]][pos[1]].isWhite:
+
+                # capturing en passant
+                if (self.isWhite and dy == 1) or (not self.isWhite and dy == -1):
+                    capturedPiece = board[move.oldRow][move.newCol]
+                    if isinstance(capturedPiece, Pawn) and capturedPiece.enPassant \
+                            and capturedPiece.isWhite != board[move.oldRow][move.oldCol].isWhite:
                         return True
         return False

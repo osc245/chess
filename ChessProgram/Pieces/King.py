@@ -1,5 +1,6 @@
-from ChessProgram.Pieces.Piece import Piece
-from ChessProgram.Pieces.Rook import Rook
+from .Piece import Piece
+from .Rook import Rook
+from ..Move import Move
 
 
 class King(Piece):
@@ -7,22 +8,21 @@ class King(Piece):
         Piece.__init__(self, isWhite, "K", "k")
         self.moved = False
 
-    def validMove(self, pos, board):
-        if not (Piece.validCapture(pos, board) or Piece.validMove(pos, board)):
-            return False
-        dy, dx = Piece.getDiff(pos)
+    def validMove(self, move, board):
+        dy, dx = self.getDiff(move)
+
+        # moving normally
         if abs(dx) <= 1 and abs(dy) <= 1:
             self.moved = True
             return True
-        if not self.moved:  # castling
-            if abs(dx) != 2 or dy != 0:
+
+        # castling
+        if not self.moved and abs(dx) == 2 and dy == 0:
+            rookRow = 0 if self.isWhite else 7
+            rookCol = 0 if dx == -2 else 7
+            if not isinstance(board[rookRow][rookCol], Rook) or board[rookRow][rookCol].moved:
                 return False
-            row = 0 if self.isWhite else 7
-            column = 0 if dx == -2 else 7
-            if not isinstance(board[row][column], Rook) or board[row][column].moved:
-                return False
-            move = [pos[0], pos[1], row, column]
-            if Piece.checkClearLine(move, board):
+            rookMove = Move(move.oldRow, move.oldCol, rookRow, rookCol)
+            if self.checkClearLine(rookMove, board):
                 return True
         return False
-
