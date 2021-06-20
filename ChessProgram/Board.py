@@ -39,12 +39,9 @@ class Board:
 
     # checks whether the given piece can move to a given square
     def checkMove(self, move):
-        print(move.oldRow, move.oldCol, move.newRow, move.newCol)
-        print(1)
         # check that the move is valid
         if not self.validMovement(move):
             return False
-        print(2)
 
         # make a copy of the board, make the move then see if making that move would put the player's king in check
         tempBoard = copy.deepcopy(self)
