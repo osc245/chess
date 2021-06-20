@@ -1,5 +1,5 @@
-from .Board import Board
-from . import Parser
+from ChessProgram.Board import Board
+from ChessProgram import Parser
 
 
 # enter all the moves given so far but stops if an invalid move is given (either wrong notation or illegal move)
@@ -9,7 +9,7 @@ def doMoves(moves, currBoard):
     moveObjects = Parser.parseMoves(moves)
     for i in range(len(moveObjects)):
         if not currBoard.move(moveObjects[i]):
-            print("Illegal move:", algebraicMoves[i])
+            print("Illegal move: {}\n".format(algebraicMoves[i]))
             return
         currBoard.whitesTurn = not currBoard.whitesTurn
 
